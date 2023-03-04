@@ -18,6 +18,18 @@ class Product:
     def __init__(self, price, name_on_receipt): # data received from receipt
         self.price = price
         self.name_on_receipt = name_on_receipt
+    
+    def product_to_serpapi_json(self,line_item):
+    """converts the product object to a json that will be used in the google search"""
+
+    self.params = {
+        "q": self.line_item.name_on_receipt + "site:https://www.sainsburys.co.uk/",
+            "hl": "en",
+            "gl": "uk",
+            "google_domain": "google.com",
+            "api_key": private_api_key
+    }
+
 
     # if we need getters and setters we can make them later
     # def get_price(self):
