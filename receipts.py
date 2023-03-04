@@ -1,6 +1,7 @@
 from veryfi import Client
 from abc import ABC
 import json
+import OS
 
 class VerifyParser():
     def __init__(self,filename: str) -> None:
@@ -16,6 +17,9 @@ class VerifyParser():
 
 
     def get_response(self) -> None:
+        if os.exists("response.json"):
+            response = json.loads("response.json")
+        else:
         veryfi_client = Client(self.client_id, 
                                 self.client_secret, 
                                 self.username, 
@@ -24,7 +28,7 @@ class VerifyParser():
         response = veryfi_client.process_document(self.file_path, 
                                                     categories=self.categories)
         self.response = response
-        self.items = response["line_items"]
+        json.dumps(self.response)
 
     def get_date(self) -> str:
         if self.items == None:
@@ -33,13 +37,17 @@ class VerifyParser():
         return self.response["created_date"]
     
     def get_line_items(self):
-        pass
+        if self.items == None:
+            self.get_response()
+
+        return self.response["line_items"]
 
 
 
 
-parser = VerifyParser('bad receipt.jpg')
-date = parser.get_date()
-print(date)
+filename = 'bad receipt.jpg'
+parser = VerifyParser(filename)
+items = parser.get_line_items()
+print(items)
 
-print(parser.response)
+# print(parser.response)
