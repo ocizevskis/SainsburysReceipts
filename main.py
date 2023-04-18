@@ -53,6 +53,8 @@ async def add_receipt(json: JSON_OBJECT):
     for p in receipt.products:
         try:
             p.populate_product_via_db()
+            handler.insert_product(product=p)
+
         except:
             search_tool = GoogleProductSearch()
             search_tool.find_item(p)
@@ -67,14 +69,14 @@ async def add_receipt(json: JSON_OBJECT):
 async def fetch_shopping_history():
     
     handler = DbHandler()
-    hist = {"history":handler.get_history(cust_id=0)}
+    hist = handler.get_history(cust_id=0)
     
     return hist
         
 
 @app.get("/api/dashboard")
 async def fetch_dashboard_data():
-    '''not yet implementeed'''
+    '''not yet implemented'''
     
     return []
 
