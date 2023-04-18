@@ -12,7 +12,7 @@ Originally made as a project for HackTheBurgh 2023, this is a refactored version
 
 to start the server. 
 
-Some basic **Integration Tests** can be found under /tests, and testing it done automatically on ush via github actions.
+Some basic **Integration Tests** can be found under /tests, and testing it done automatically on push via github actions.
 
 
 
