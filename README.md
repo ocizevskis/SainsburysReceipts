@@ -17,3 +17,12 @@ Some basic **Integration Tests** can be found under /tests, and testing it done 
 
 
 The web interface can be used to access the main dashboard with spending stats, as well as the purchase history. A pre populated database has been provided, along with some test images of receipts.
+
+
+## WIP
+
+Reimplement everything in Scala
+Add Auth0 in the backend; currently the API only works with a test user.
+Refactor dashboard stats request function.
+
+
