@@ -4,3 +4,4 @@ google-search-results
 beautifulsoup4
 aiofiles
 numpy
+jwt

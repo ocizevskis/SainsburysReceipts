@@ -23,8 +23,6 @@ The web interface can be used to access the main dashboard with spending stats, 
 
 Reimplement everything in Scala
 
-Add Auth0 in the backend; currently the API only works with a test user.
-
 Refactor dashboard stats request function.
 
 

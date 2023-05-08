@@ -5,6 +5,7 @@ private_api_key.py
 .bsp
 .idea
 .vscode
+.tmp
 post_things.py
 test_google_search.py
 test_main.py
