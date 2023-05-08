@@ -1,4 +1,5 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Depends, HTTPException
+from fastapi.security import HTTPBearer
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -6,10 +7,11 @@ from modules.Receipt import Receipt
 from modules.parsers import VeryfiParser
 from modules.product_search import GoogleProductSearch
 from modules.DatabaseHandler import DbHandler
+from modules.auth import verify_token
 from config import VERYFI_AUTH, SERPAPI_AUTH, DB_ADDRESS
 
 app = FastAPI()
-
+token_auth_scheme = HTTPBearer()
 #setup cors
 origins = ["*"] #sayfdee
 
@@ -28,8 +30,16 @@ class JSON_OBJECT(BaseModel):
     line_items: list
 
 
+
+
 @app.post("/api/uploadfile")
-async def scan_receipt(my_file: UploadFile = File(...)):
+async def scan_receipt(my_file: UploadFile = File(...), token: str = Depends(HTTPBearer)):
+    
+    
+    response = verify_token(token)
+    cust_id = response["sub"]
+    
+    
     img = await my_file.read()
     
     parser = VeryfiParser()
@@ -40,14 +50,17 @@ async def scan_receipt(my_file: UploadFile = File(...)):
 
 
 @app.post("/api/submit_receipt")
-async def add_receipt(json: JSON_OBJECT):
+async def add_receipt(json: JSON_OBJECT, token: str = Depends(HTTPBearer)):
     """submit the processed receipt data to the database"""
+    
+    response = verify_token(token)
+    cust_id = response["sub"]
     
     receipt = Receipt()
     receipt.from_json(json)
     
     handler = DbHandler()
-    inserted_tuple = handler.insert_receipt(receipt=receipt,cust_id=0)
+    inserted_tuple = handler.insert_receipt(receipt=receipt,cust_id=cust_id)
     rid = inserted_tuple[0]
     
     for p in receipt.products:
@@ -66,10 +79,13 @@ async def add_receipt(json: JSON_OBJECT):
         
 
 @app.get("/api/history")
-async def fetch_shopping_history():
+async def fetch_shopping_history(token: str = Depends(HTTPBearer)):
     
+    response = verify_token(token)
+    cust_id = response["sub"]
+        
     handler = DbHandler()
-    hist = handler.get_history(cust_id=0)
+    hist = {"history":handler.get_history(cust_id=cust_id)}
     
     return hist
         
